@@ -1,4 +1,6 @@
-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
+// API key removed from repository. Configure API calls from a secure server-side environment.
+// DO NOT store secrets in client-side JavaScript. See .env.example for local setup.
+
 const button = document.querySelector("button");
 const textarea = document.querySelector("textarea");
 
