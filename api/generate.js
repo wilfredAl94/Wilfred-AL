@@ -1,6 +1,7 @@
-export default async function handler(req, res) {
-  res.status(501).json({
-    success: false,
-    message: "Runway integration is not implemented yet."
-  });
-}
+fetch("/api/generate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ prompt })
+});
