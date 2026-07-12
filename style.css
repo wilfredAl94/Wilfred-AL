@@ -1,0 +1,143 @@
+const button = body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#0f172a;
+    color:white;
+}
+
+header{
+    text-align:center;
+    padding:30px;
+    background:#1e293b;
+}
+
+header h1{
+    margin:0;
+    font-size:36px;
+}
+
+header p{
+    color:#cbd5e1;
+}
+
+.container{
+    width:90%;
+    max-width:700px;
+    margin:40px auto;
+    text-align:center;
+}
+
+textarea{
+    width:100%;
+    height:180px;
+    border:none;
+    border-radius:12px;
+    padding:15px;
+    font-size:16px;
+    outline:none;
+}
+
+select{
+    width:100%;
+    padding:15px;
+    margin-top:15px;
+    border-radius:10px;
+    border:none;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    padding:16px;
+    margin-top:20px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:18px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+#status{
+    margin-top:20px;
+    font-size:18px;
+    color:#22c55e;
+}.querySelector("button");
+const textarea = document.querySelector("textarea");
+
+button.addEventListener("click", function () {
+
+    const prompt = textarea.value.trim();
+
+    if (prompt === "") {
+        alert("Please enter a video prompt.");
+        return;
+    }
+
+    button.disabled = true;
+    button.innerHTML = "Generating...";
+
+    const old = document.getElementById("result");
+    if (old) old.remove();
+
+    const result = document.createElement("div");
+    result.id = "result";
+    result.style.marginTop = "25px";
+    result.style.color = "white";
+    result.innerHTML = `
+        <p>⏳ AI is creating your video...</p>
+
+        <progress id="progress" value="0" max="100" style="width:100%;height:20px;"></progress>
+
+        <br><br>
+
+        <video id="video" width="100%" controls style="display:none;border-radius:10px;">
+            <source src="" type="video/mp4">
+        </video>
+
+        <br>
+
+        <button id="downloadBtn" style="display:none;margin-top:15px;">
+        Download Video
+        </button>
+    `;
+
+    document.querySelector(".container").appendChild(result);
+
+    let value = 0;
+
+    const timer = setInterval(() => {
+
+        value += 5;
+
+        document.getElementById("progress").value = value;
+
+        if (value >= 100) {
+
+            clearInterval(timer);
+
+            result.innerHTML = `
+            <h3>✅ Demo Complete!</h3>
+
+            <p>Your prompt:</p>
+
+            <p><b>${prompt}</b></p>
+
+            <p>This is where the real AI video will appear after we connect Wilfred AI to an AI server.</p>
+
+            <button onclick="alert('Download will work after AI integration.')">
+            Download Video
+            </button>
+            `;
+
+            button.disabled = false;
+            button.innerHTML = "Generate AI Video";
+        }
+
+    }, 150);
+
+});
