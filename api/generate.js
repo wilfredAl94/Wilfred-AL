@@ -6,26 +6,18 @@ export default async function handler(req, res) {
   try {
     const { prompt } = req.body;
 
-    const response = await fetch(
-      "https://api.dev.runwayml.com/v1/text_to_video",
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${process.env.RUNWAY_API_KEY}`,
-          "Content-Type": "application/json",
-          "X-Runway-Version": "2024-11-06"
-        },
-        body: JSON.stringify({
-          promptText: prompt,
-          ratio: "1280:720",
-          duration: 5,
-          model: "gen4.5"
-        })
-      }
-    );
+    const response = await fetch("https://fal.run/fal-ai/fast-sdxl", {
+      method: "POST",
+      headers: {
+        "Authorization": `Key ${process.env.FAL_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        prompt: prompt
+      })
+    });
 
     const data = await response.json();
-
     return res.status(response.status).json(data);
 
   } catch (err) {
