@@ -1,78 +1,33 @@
-// API key removed from repository. Configure API calls from a secure server-side environment.
-// DO NOT store secrets in client-side JavaScript. See .env.example for local setup.
-
 const button = document.querySelector("button");
 const textarea = document.querySelector("textarea");
 
-button.addEventListener("click", function () {
+button.addEventListener("click", async () => {
+  const prompt = textarea.value.trim();
 
-    const prompt = textarea.value.trim();
+  if (!prompt) {
+    alert("Please enter a prompt.");
+    return;
+  }
 
-    if (prompt === "") {
-        alert("Please enter a video prompt.");
-        return;
-    }
+  button.disabled = true;
+  button.textContent = "Generating...";
 
-    button.disabled = true;
-    button.innerHTML = "Generating...";
+  try {
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt }),
+    });
 
-    const old = document.getElementById("result");
-    if (old) old.remove();
+    const data = await response.json();
 
-    const result = document.createElement("div");
-    result.id = "result";
-    result.style.marginTop = "25px";
-    result.style.color = "white";
-    result.innerHTML = `
-        <p>⏳ AI is creating your video...</p>
+    alert(JSON.stringify(data, null, 2));
+  } catch (err) {
+    alert("Error: " + err.message);
+  }
 
-        <progress id="progress" value="0" max="100" style="width:100%;height:20px;"></progress>
-
-        <br><br>
-
-        <video id="video" width="100%" controls style="display:none;border-radius:10px;">
-            <source src="" type="video/mp4">
-        </video>
-
-        <br>
-
-        <button id="downloadBtn" style="display:none;margin-top:15px;">
-        Download Video
-        </button>
-    `;
-
-    document.querySelector(".container").appendChild(result);
-
-    let value = 0;
-
-    const timer = setInterval(() => {
-
-        value += 5;
-
-        document.getElementById("progress").value = value;
-
-        if (value >= 100) {
-
-            clearInterval(timer);
-
-            result.innerHTML = `
-            <h3>✅ Demo Complete!</h3>
-
-            <p>Your prompt:</p>
-
-            <p><b>${prompt}</b></p>
-
-            <p>This is where the real AI video will appear after we connect Wilfred AI to an AI server.</p>
-
-            <button onclick="alert('Download will work after AI integration.')">
-            Download Video
-            </button>
-            `;
-
-            button.disabled = false;
-            button.innerHTML = "Generate AI Video";
-        }
-
-    }, 150);
-
+  button.disabled = false;
+  button.textContent = "Generate AI Video";
 });
