@@ -6,23 +6,31 @@ export default async function handler(req, res) {
   try {
     const { prompt } = req.body;
 
-    const response = await fetch("https://fal.run/fal-ai/fast-sdxl", {
-      method: "POST",
-      headers: {
-        "Authorization": `Key ${process.env.FAL_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        prompt: prompt
-      })
-    });
+    const response = await fetch(
+      "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.HF_TOKEN}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          inputs: prompt
+        })
+      }
+    );
 
-    const data = await response.json();
-    return res.status(response.status).json(data);
+    if (!response.ok) {
+      const error = await response.text();
+      return res.status(response.status).send(error);
+    }
+
+    const image = await response.arrayBuffer();
+
+    res.setHeader("Content-Type", "image/png");
+    res.send(Buffer.from(image));
 
   } catch (err) {
-    return res.status(500).json({
-      error: err.message
-    });
+    res.status(500).json({ error: err.message });
   }
 }
